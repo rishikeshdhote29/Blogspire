@@ -1,6 +1,5 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy Node.js app to Azure Web App - blogspire
 
 on:
@@ -21,7 +20,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # This is required for actions/checkout
+      contents: read # Required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -34,12 +33,15 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: app
 
       - name: Build
         run: npm run build --if-present
+        working-directory: app
 
       - name: Test
         run: npm run test --if-present
+        working-directory: app
 
       # Avoid uploading node_modules, .git, and other non-essential files.
       - name: Create deployment package
@@ -49,12 +51,13 @@ jobs:
             --exclude='./node_modules' \
             --exclude='./.github' \
             -czf app.tgz .
+        working-directory: app
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: app.tgz
+          path: app/app.tgz
           if-no-files-found: error
 
   deploy:
@@ -63,8 +66,8 @@ jobs:
     environment:
       name: Production
     permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read # This is required for actions/checkout
+      id-token: write # Required for requesting the JWT
+      contents: read # Required for actions/checkout
 
     steps:
       - name: Download artifact from build job
@@ -87,5 +90,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: blogspire
-          slot-name: Production
+          slot-name: production
           package: .
