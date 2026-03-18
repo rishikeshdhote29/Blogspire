@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '20.x'
+  NODE_VERSION: '24.x'
   ARTIFACT_NAME: node-app
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -29,6 +29,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+
+      - name: Verify Node and npm versions
+        run: |
+          node -v
+          npm -v
 
       - name: Install dependencies
         run: npm ci
