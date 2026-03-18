@@ -62,13 +62,15 @@ jobs:
 
       - name: Create deployment package
         run: |
+          ARCHIVE_PATH="$RUNNER_TEMP/app.tgz"
           tar \
             --exclude='./.git' \
             --exclude='./node_modules' \
             --exclude='./BACKEND/node_modules' \
             --exclude='./FRONTEND/node_modules' \
             --exclude='./.github' \
-            -czf app.tgz .
+            -czf "$ARCHIVE_PATH" .
+          mv "$ARCHIVE_PATH" app.tgz
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
