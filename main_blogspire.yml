@@ -9,56 +9,83 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: blogspire-production
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20.x'
+  ARTIFACT_NAME: node-app
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read # This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
-      - name: npm install, build, and test
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Test
+        run: npm run test --if-present
+
+      # Avoid uploading node_modules, .git, and other non-essential files.
+      - name: Create deployment package
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          tar \
+            --exclude='./.git' \
+            --exclude='./node_modules' \
+            --exclude='./.github' \
+            -czf app.tgz .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: .
+          name: ${{ env.ARTIFACT_NAME }}
+          path: app.tgz
+          if-no-files-found: error
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    environment:
+      name: Production
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: node-app
+          name: ${{ env.ARTIFACT_NAME }}
+
+      - name: Extract package
+        run: tar -xzf app.tgz
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.__clientidsecretname__ }}
-          tenant-id: ${{ secrets.__tenantidsecretname__ }}
-          subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_50D82FA68A6441208CFA5A7E377D857F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4F0386DB7C93401EB0A418E6E674EE8A }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_642097240AF94485B4ECB50F058F5A44 }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'blogspire'
-          slot-name: 'Production'
+          app-name: blogspire
+          slot-name: Production
           package: .
