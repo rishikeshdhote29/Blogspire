@@ -20,7 +20,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # Required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -33,17 +33,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: app
+        working-directory: .
 
       - name: Build
         run: npm run build --if-present
-        working-directory: app
+        working-directory: .
 
       - name: Test
         run: npm run test --if-present
-        working-directory: app
+        working-directory: .
 
-      # Avoid uploading node_modules, .git, and other non-essential files.
       - name: Create deployment package
         run: |
           tar \
@@ -51,13 +50,13 @@ jobs:
             --exclude='./node_modules' \
             --exclude='./.github' \
             -czf app.tgz .
-        working-directory: app
+        working-directory: .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: app/app.tgz
+          path: app.tgz
           if-no-files-found: error
 
   deploy:
@@ -66,8 +65,8 @@ jobs:
     environment:
       name: Production
     permissions:
-      id-token: write # Required for requesting the JWT
-      contents: read # Required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -81,9 +80,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_50D82FA68A6441208CFA5A7E377D857F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4F0386DB7C93401EB0A418E6E674EE8A }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_642097240AF94485B4ECB50F058F5A44 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
