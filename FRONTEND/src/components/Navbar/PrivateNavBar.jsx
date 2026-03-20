@@ -232,6 +232,12 @@ export default function PrivateNavbar() {
                 >
                   Settings
                 </NavLink>
+                <NavLink
+                  to="/user/my-posts"
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                >
+                  My posts
+                </NavLink>
                 <button
                   onClick={logoutHandler}
                   className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"

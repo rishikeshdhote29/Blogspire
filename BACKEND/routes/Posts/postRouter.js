@@ -3,7 +3,7 @@ const express = require('express');
 const {createPost,fetchAllPosts} = require('../../controllers/posts/postController');
  const isLoggedIn= require('../../middlewares/isLoggedIn');
 const {fetchSinglePost,deletePost,updatePost, likePost, dislikePost, clapPost, schedulePost,
- getPublicPosts, postViewCount, fetchUsersAllPosts
+ getPublicPosts, postViewCount, fetchUsersAllPosts, fetchPublicUserPosts
 } = require("../../controllers/Posts/postController");
 const isAccountVerified = require("../../middlewares/isAccountVerified");
 const postRouter = express.Router();
@@ -21,6 +21,8 @@ postRouter.post('/',isLoggedIn,isAccountVerified,postImageUpload,createPost);
 postRouter.get('/',isLoggedIn,fetchAllPosts);
 //get all post route
 postRouter.get('/my-posts',isLoggedIn,fetchUsersAllPosts);
+//get all post route
+postRouter.get('/public-user-posts',isLoggedIn,fetchPublicUserPosts);
 // fetch 4 posts
 postRouter.get('/public',getPublicPosts)
 postRouter.get('/:id',fetchSinglePost);

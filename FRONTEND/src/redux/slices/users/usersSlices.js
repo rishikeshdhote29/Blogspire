@@ -179,6 +179,87 @@ export const registerAction = createAsyncThunk(
     }
 );
 
+// Follow user action
+export const followUserAction= createAsyncThunk("users/follow",
+    async(userId,{rejectWithValue,getState,dispatch})=>{
+        try{
+    const token = getState().users?.userAuth?.userInfo?.token;
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+        const {data}=await axios.put(`http://localhost:3000/api/v1/users/following/${userId}`,{},config);
+        return data;
+    }catch(error){
+         
+            return rejectWithValue(error?.response?.data);
+        }
+    })
+
+
+
+// unfollow user action
+export const unfollowUserAction= createAsyncThunk("users/unfollow",
+    async(userId,{rejectWithValue,getState,dispatch})=>{
+        try{
+    const token = getState().users?.userAuth?.userInfo?.token;
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+        const {data}=await axios.put(`http://localhost:3000/api/v1/users/unfollowing/${userId}`,{},config);
+        return data;
+    }catch(error){
+         
+            return rejectWithValue(error?.response?.data);
+        }
+    })
+
+
+
+// block user action
+export const blockUserAction= createAsyncThunk("users/block",
+    async(userId,{rejectWithValue,getState,dispatch})=>{
+        try{
+    const token = getState().users?.userAuth?.userInfo?.token;
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+        const {data}=await axios.put(`http://localhost:3000/api/v1/users/block/${userId}`,{},config);
+        return data;
+    }catch(error){
+         
+            return rejectWithValue(error?.response?.data);
+        }
+    })
+
+// unblock user action
+export const unblockUserAction= createAsyncThunk("users/unblock",
+    async(userId,{rejectWithValue,getState,dispatch})=>{
+        try{
+    const token = getState().users?.userAuth?.userInfo?.token;
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+        const {data}=await axios.put(`http://localhost:3000/api/v1/users/unblock/${userId}`,{},config);
+        return data;
+    }catch(error){
+         
+            return rejectWithValue(error?.response?.data);
+        }
+    })
+
+
 //! Users slices
 
 const usersSlice = createSlice({
@@ -303,6 +384,72 @@ const usersSlice = createSlice({
             state.loading = false;
             state.isUpdated = false;
         });
+        // follow user
+        builder.addCase(followUserAction.pending,(state)=> {
+            state.loading = true;
+            
+        });
+        builder.addCase(followUserAction.fulfilled,(state)=> {
+            state.loading = false;
+            state.success = true;
+            
+            
+        });
+        builder.addCase(followUserAction.rejected,(state,action)=> {
+            state.loading = false;
+            state.error=action.payload;
+             state.success = false;
+            
+        })
+        // unfollow user
+        builder.addCase(unfollowUserAction.pending,(state)=> {
+            state.loading = true;
+            
+        });
+        builder.addCase(unfollowUserAction.fulfilled,(state)=> {
+            state.loading = false;
+            state.success = true;
+            
+            
+        });
+        builder.addCase(unfollowUserAction.rejected,(state,action)=> {
+            state.loading = false;
+            state.error=action.payload;
+             state.success = false;
+            
+        })// block user
+        builder.addCase(blockUserAction.pending,(state)=> {
+            state.loading = true;
+            
+        });
+        builder.addCase(blockUserAction.fulfilled,(state)=> {
+            state.loading = false;
+            state.success = true;
+            
+            
+        });
+        builder.addCase(blockUserAction.rejected,(state,action)=> {
+            state.loading = false;
+            state.error=action.payload;
+             state.success = false;
+            
+        })// Unblock user
+        builder.addCase(unblockUserAction.pending,(state)=> {
+            state.loading = true;
+            
+        });
+        builder.addCase(unblockUserAction.fulfilled,(state)=> {
+            state.loading = false;
+            state.success = true;
+            
+            
+        });
+        builder.addCase(unblockUserAction.rejected,(state,action)=> {
+            state.loading = false;
+            state.error=action.payload;
+             state.success = false;
+            
+        })
     },
 });
 

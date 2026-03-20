@@ -42,11 +42,11 @@ export default function UpdateProfile() {
         location: user.location || "",
         phone:    user.phone    || "",
         gender:   user.gender   || "",
-        title:    user.title|| "",
+        title:    user.title || "",
         dob:    user.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
       });
       if (user.profilePicture) setImagePreview(user.profilePicture);
-	  if(user.coverImage) setCoverImagePreview(user.coverImage);
+	  if (user.coverImage) setCoverImagePreview(user.coverImage);
     }
   }, [user]);
 
@@ -102,7 +102,7 @@ export default function UpdateProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateProfileAction({ ...formData, profilePicture: imageFile,coverImage:coverImageFile }));
+    dispatch(updateProfileAction({ ...formData, profilePicture: imageFile, coverImage: coverImageFile }));
   };
 
   return (

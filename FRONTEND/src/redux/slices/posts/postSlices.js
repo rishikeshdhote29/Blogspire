@@ -74,6 +74,28 @@ export const fetchPublicPostAction = createAsyncThunk(
     }
   }
  );
+ //!Fetch public user  post
+ export const fetchPublicUserPostsAction = createAsyncThunk(
+  "posts/fetch-public-user-posts",
+  async(userId,payload,{rejectWithValue,getState,dispatch})=> {
+    //make request
+    try {
+      const token = getState().users?.userAuth?.userInfo?.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const {data} = await axios.get(
+        "http://localhost:3000/api/v1/posts/public-user-posts/"+userId,
+        config
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+ );
 
 //! Create Post
 export const addPostAction = createAsyncThunk(
@@ -331,14 +353,14 @@ const postsSlice = createSlice({
       state.loading = false;
       state.success = false;
     });
+    //!Fetch My posts
 builder.addCase(fetchMyPostsAction.pending, (state, action) => {
-      console.log("pending", fetchPrivatePostsAction.pending);
+      
       state.loading = true;
     });
     
     builder.addCase(fetchMyPostsAction.fulfilled, (state, action) => {
-      console.log("success", action.payload)
-      console.log("fetchMyPostsAction", fetchPrivatePostsAction.fulfilled);
+      
       // state.success = true;
       state.posts = action.payload;
       state.loading = false;
@@ -346,6 +368,26 @@ builder.addCase(fetchMyPostsAction.pending, (state, action) => {
     });
     
     builder.addCase(fetchMyPostsAction.rejected, (state, action) => {
+      console.log("failed", action.payload);
+      state.error = action.payload;
+      state.loading = false;
+      state.success = false;
+    });
+    //fetch public user posts
+      builder.addCase(fetchPublicUserPostsAction.pending, (state, action) => {
+      
+      state.loading = true;
+    });
+    
+    builder.addCase(fetchPublicUserPostsAction.fulfilled, (state, action) => {
+      
+      // state.success = true;
+      state.posts = action.payload;
+      state.loading = false;
+      state.error = null;
+    });
+    
+    builder.addCase(fetchPublicUserPostsAction.rejected, (state, action) => {
       console.log("failed", action.payload);
       state.error = action.payload;
       state.loading = false;

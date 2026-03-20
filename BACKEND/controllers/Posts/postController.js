@@ -130,6 +130,35 @@ exports.fetchUsersAllPosts=asyncHandler(async(req,res,next)=>{
 
 
 })
+
+//@desc fetch public user all posts
+//@route GET /api/v1/public-user-posts/:userId
+//@access private
+
+exports.fetchPublicUserPosts=asyncHandler(async(req,res,next)=>{
+	const userId=req.params.userId;
+	
+
+	//fetch those posts who author is not availble in blockingUsersId
+	 const allPosts=	await Post.find({author:userId}).populate({
+		 path:"author",
+		 model:"User",
+		 select:"email username role "
+	 }).populate({
+		 path:"category",
+		 model:"Category",
+		 select:"name ",
+		 
+	 });
+	 //
+	 res.json({
+		 status:"success",
+		 message:"All posts have been successfully",
+		allPosts
+	 })
+
+
+})
 //@desc fetch single  post
 //@route GET /api/v1/post/:id
 //@access Public

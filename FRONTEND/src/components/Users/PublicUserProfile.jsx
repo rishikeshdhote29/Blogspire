@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 // import UserPosts from "./UserPosts";
-import {userPublicProfileAction, viewProfileAction} from "../../redux/slices/users/usersSlices";
+import {
+  blockUserAction,
+  followUserAction, unblockUserAction,
+  unfollowUserAction,
+  userPublicProfileAction,
+  viewProfileAction
+} from "../../redux/slices/users/usersSlices";
+import PublicUserPosts from "../Posts/PublicUserPosts.jsx";
 
 export default function PublicUserProfile() {
   // Get the id from params
@@ -15,11 +22,30 @@ export default function PublicUserProfile() {
   
   useEffect(()=>{
     dispatch(viewProfileAction(userId))
-  },[dispatch])
-console.log(userId);
+  },[dispatch, userId])
   const profile = useSelector((state) => state?.users?.publicUser);
-console.log(profile);
 
+ 
+  // follow user handler
+  async function handleFollow(){
+    await dispatch(followUserAction(userId));
+    dispatch(userPublicProfileAction(userId));
+  }
+  //unfollow user handler
+  async function handleUnfollow(){
+    await dispatch(unfollowUserAction(userId));
+    dispatch(userPublicProfileAction(userId));
+  }
+  //block user handler
+  async function handleBlock(){
+    await dispatch(blockUserAction(userId));
+    dispatch(userPublicProfileAction(userId));
+  }//unblock user handler
+  async function handleUnblock(){
+    await dispatch(unblockUserAction(userId));
+    dispatch(userPublicProfileAction(userId));
+  }
+  
   return (
     <>
       <div className="flex h-full">
@@ -65,7 +91,7 @@ console.log(profile);
                         <div className="min-w-0 flex-1">
                           {/* Added top margin to username */}
                           <h1 className="truncate text-2xl font-bold text-gray-900 mt-3 mb-2">
-                            {profile?.user?.username}
+                            {profile?.user?.name}
                           </h1>
                           <div className="mt-2">
                             <div className="text-sm font-medium text-gray-500">Email</div>
@@ -110,6 +136,8 @@ console.log(profile);
                           {/* Unblock/Block button */}
                           <button
                           type="button"
+                          onClick={()=>{handleUnblock()}}
+                          
                           className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                           <svg
@@ -132,6 +160,8 @@ console.log(profile);
                             {/* ... button content ... */}
                             <button
                           type="button"
+                          onClick={()=>{handleBlock()}}
+                          
                           className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                           <svg
@@ -155,6 +185,7 @@ console.log(profile);
                           {/* Follow/Unfollow button */}
                          <button
                           type="button"
+                          onClick={()=>{handleFollow()}}
                           className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                           <svg
@@ -177,6 +208,8 @@ console.log(profile);
                             {/* ... button content ... */}
                             <button
                           type="button"
+                          onClick={()=>{handleUnfollow()}}
+                          
                           className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                           <svg
@@ -207,7 +240,7 @@ console.log(profile);
           </div>
         </div>
       </div>
-       {/* <UserPosts posts={profile?.user?.posts}/> */}
+       <PublicUserPosts/>
     </>
   );
 }

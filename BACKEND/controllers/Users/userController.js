@@ -95,20 +95,20 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
 		}).populate({
 			path:"following",
 			model:"User",
-			select:"userName  role"
+			select:"name profilePicture  title"
 		}).populate({
 			path:"followers",
 			model:"User",
-			select:"userName  role"
+			select:"name profilePicture  title"
 			
 		}).populate({
 			path:"blockedUser",
 			model:"User",
-			select:"userName  role"
+			select:"name profilePicture  title"
 		}).populate({
 			path:"profileViewers",
 			model:"User",
-			select:"userName  role"
+			select:"name profilePicture  title"
 		})
 		res.json({
 			status: "success",

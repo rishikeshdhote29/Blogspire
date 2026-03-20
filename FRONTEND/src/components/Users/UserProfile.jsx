@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { userProfileAction } from "../../redux/slices/users/usersSlices.js";
-
+import { Link } from "react-router-dom";
 
 
 export default function UserProfile() {
@@ -76,8 +76,8 @@ const displayProfile = {
                       </div>
                       <div className="justify-stretch mt-6 flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                         {/* Profile Views */}
-                        <button
-                          type="button"
+                        <Link
+                            to={"/user/profile-viewers"}
                           className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                           <svg
@@ -100,12 +100,13 @@ const displayProfile = {
                               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          {user?.profileViewers.length||0}
-                        </button>
+                          {user?.profileViewers.length||0} Viewers
+                        </Link>
                         
                         {/* follow */}
-                        <button
-                          type="button"
+                        <Link
+                          
+                          to="/user/followers"
                           className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                           <svg
@@ -123,11 +124,12 @@ const displayProfile = {
                               d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
                             />
                           </svg>
-                          Follower
-                        </button>
+                          Followers
+                        </Link>
                         {/* following*/}
-                        <button
-                          type="button"
+                        <Link
+                          to="/user/following"
+                          
                           className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
                           <svg
@@ -146,7 +148,29 @@ const displayProfile = {
                             />
                           </svg>
                           Following
-                        </button>
+                        </Link>
+                         {/* Blocked user*/}
+                        <Link
+                            to="/user/blocked-users"
+                            
+                            className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        >
+                          <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                          >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                            />
+                          </svg>
+                          Blocked users
+                        </Link>
                       </div>
                     </div>
                     <div className="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
@@ -156,14 +180,14 @@ const displayProfile = {
                     </div>
                   </div>
                 </div>
-
+                
                 <div className="mt-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
                     {Object.entries(displayProfile.fields).map(([field, value]) => (
-                      <div className="sm:col-span-1" key={field}>
-                        <dt className="text-sm font-medium text-gray-500">
-                          {field}
-                        </dt>
+                        <div className="sm:col-span-1" key={field}>
+                          <dt className="text-sm font-medium text-gray-500">
+                            {field}
+                          </dt>
                         <dd className="mt-1 text-sm text-gray-900">{value}</dd>
                       </div>
                     ))}

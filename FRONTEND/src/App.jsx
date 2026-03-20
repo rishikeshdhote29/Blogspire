@@ -16,6 +16,11 @@ import NotFound from "./components/NotFound";
 import UserProfile from "./components/Users/UserProfile.jsx";
 import UpdateProfile from "./components/Users/UpdateProfile.jsx";
 import MyPosts from "./components/Posts/MyPosts.jsx";
+import Followers from "./components/Users/Followers.jsx";
+import Following from "./components/Users/Following.jsx";
+import ProfileViewer from "./components/Users/ProfileViewer.jsx";
+import BlockedUsers from "./components/Users/BlockedUsers.jsx";
+import PublicUserPosts from "./components/Posts/PublicUserPosts.jsx";
 
 export default function App() {
   const { userAuth } = useSelector((state) => state.users);
@@ -43,6 +48,13 @@ export default function App() {
           <Route path="/user/profile" element={<UserProfile />} />
           <Route path="/user/update-profile" element={<UpdateProfile />} />
           <Route path="/user/my-posts" element={<MyPosts />} />
+          <Route path="/user/followers" element={<Followers />} />
+          <Route path="/user/profile-viewers" element={<ProfileViewer />} />
+          <Route path="/user/following" element={<Following />} />
+          
+          <Route path="/user/blocked-users" element={<BlockedUsers />} />
+          <Route path="/user/public-user-posts" element={<PublicUserPosts />} />
+          
           
        
         </Route>
