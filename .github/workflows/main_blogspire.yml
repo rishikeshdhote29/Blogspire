@@ -9,104 +9,47 @@ on:
       - main
   workflow_dispatch:
 
-concurrency:
-  group: blogspire-production
-  cancel-in-progress: true
-
-env:
-  NODE_VERSION: '24.x'
-  ARTIFACT_NAME: node-app
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: |
-            BACKEND/package-lock.json
-            FRONTEND/package-lock.json
+          node-version: '24.x'
 
-      - name: Verify Node and npm versions
+      - name: npm install, build, and test
         run: |
-          node -v
-          npm -v
-
-      - name: Enforce Node 24 runtime
-        run: node -e "if (!process.version.startsWith('v24.')) { console.error('Expected Node 24.x but got ' + process.version); process.exit(1); }"
-
-      - name: Install backend dependencies
-        run: npm install --legacy-peer-deps
-        working-directory: BACKEND
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: FRONTEND
-
-      - name: Build
-        run: npm run build --if-present
-        working-directory: FRONTEND
-
-      - name: Test
-        run: npm run test --if-present
-        working-directory: FRONTEND
-
-      - name: Create deployment package
-        run: |
-          ARCHIVE_PATH="$RUNNER_TEMP/app.tgz"
-          tar \
-            --exclude='./.git' \
-            --exclude='./node_modules' \
-            --exclude='./BACKEND/node_modules' \
-            --exclude='./FRONTEND/node_modules' \
-            --exclude='./.github' \
-            -czf "$ARCHIVE_PATH" .
-          mv "$ARCHIVE_PATH" app.tgz
+          npm install
+          npm run build --if-present
+          npm run test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: app.tgz
-          if-no-files-found: error
+          name: node-app
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      id-token: write
-      contents: read
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-
-      - name: Extract package
-        run: tar -xzf app.tgz
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_50D82FA68A6441208CFA5A7E377D857F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4F0386DB7C93401EB0A418E6E674EE8A }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_642097240AF94485B4ECB50F058F5A44 }}
-
-      - name: Deploy to Azure Web App
+          name: node-app
+      
+      - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: blogspire
-          slot-name: production
+          app-name: 'blogspire'
+          slot-name: 'Production'
           package: .
-
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BA981A1775674D3F880A6CC67E30C745 }}
