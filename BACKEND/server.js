@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS Configuration
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "*",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -59,7 +59,7 @@ app.use(notFoundHnadler);
 //setuping global error handler
 app.use(globalErrorHandler);
 // Start server
-const PORT = 3000;
+const PORT = process.env.PORT||3000;
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
 });
