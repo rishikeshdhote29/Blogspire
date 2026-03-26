@@ -25,7 +25,7 @@ const sendAccountVerificationEmail = async (to, verificationToken) => {
       html: `
         <p>You are receiving this email because you (or someone else) requested averifiy your account.</p>
         <p>Please click on the following link or paste it into your browser to complete the process:</p>
-        <p><a href="http://localhost:3000/account-verification/${verificationToken}">Verify your Account</a></p>
+        <p><a href="http://localhost:5173/verify-account/${verificationToken}">Verify your Account</a></p>
         <p>If you did not request this, please ignore this email and your Account  will remain unchanged.</p>
       `,
     };

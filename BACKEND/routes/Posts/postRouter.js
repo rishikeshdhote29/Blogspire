@@ -22,7 +22,7 @@ postRouter.get('/',isLoggedIn,fetchAllPosts);
 //get all post route
 postRouter.get('/my-posts',isLoggedIn,fetchUsersAllPosts);
 //get all post route
-postRouter.get('/public-user-posts',isLoggedIn,fetchPublicUserPosts);
+postRouter.get('/public-user-posts/:userId',isLoggedIn,fetchPublicUserPosts);
 // fetch 4 posts
 postRouter.get('/public',getPublicPosts)
 postRouter.get('/:id',fetchSinglePost);

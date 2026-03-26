@@ -21,6 +21,9 @@ import Following from "./components/Users/Following.jsx";
 import ProfileViewer from "./components/Users/ProfileViewer.jsx";
 import BlockedUsers from "./components/Users/BlockedUsers.jsx";
 import PublicUserPosts from "./components/Posts/PublicUserPosts.jsx";
+import ForgetPassword from "./components/Users/ForgetPassword.jsx";
+import ResetPassword from "./components/Users/ResetPassword.jsx";
+import VerifyAccount from "./components/Users/VerifyAccount.jsx";
 
 export default function App() {
   const { userAuth } = useSelector((state) => state.users);
@@ -37,6 +40,10 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/public-posts" element={<PublicPosts />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
+        <Route path="/verify-account/:verificationToken" element={<VerifyAccount />} />
+        
 
         {/* Group protected routes under ProtectedRoute wrapper */}
         <Route element={<ProtectedRoute />}>
@@ -53,7 +60,7 @@ export default function App() {
           <Route path="/user/following" element={<Following />} />
           
           <Route path="/user/blocked-users" element={<BlockedUsers />} />
-          <Route path="/user/public-user-posts" element={<PublicUserPosts />} />
+          <Route path="/user/public-user-posts/:userId" element={<PublicUserPosts />} />
           
           
        

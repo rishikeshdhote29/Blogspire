@@ -348,6 +348,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	
 	//get the reset token
 	const resetToken = await userFound.generatePasswordResetToken();
+	console.log("Generated reset token:", resetToken);
 	await userFound.save();
 	sendEmail(email, resetToken);
 	res.json({
@@ -361,17 +362,22 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 //@access public
 exports.resetPassword = asyncHandler(async (req, res, next) => {
 	//Get the token form params
+	console.log("Received reset token:", req.params.resetToken);
 	const {resetToken} = req.params;
+	console.log("Reset token from params:", resetToken);
 	// Get the password
 	const {password} = req.body;
 	//convert resetToken into hashed token
 	const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 	//verify the token with DB
-	const tokenUser = await User.findOne({passwordResetToken: hashedToken, passwordResetExprires: {$gt: Date.now()}}).select("-password");
+	const tokenUser = await User.findOne({
+		passwordResetToken: hashedToken,
+		passwordResetExprires: {$gt: Date.now()}
+	}).select("-password");
 	//if user is not found
 	
 	if (!tokenUser) {
-		let erroe = new ERROR("password token is invalid or expired");
+		const error = new Error("password token is invalid or expired");
 		next(error);
 		return;
 	}
@@ -380,7 +386,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 	let hash = await bcrypt.hash(password, salt);
 	tokenUser.password = hash;
 	tokenUser.passwordResetToken = undefined;
-	tokenUser.passwordResetExpires = undefined;
+	tokenUser.passwordResetExprires = undefined;
 	await tokenUser.save();
 	res.json({
 		status: "success",
@@ -395,6 +401,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
 exports.accountVerificationEmail = asyncHandler(async (req, res, next) => {
 	// get the emailof current user
+	console.log("Sending verification email...");
 	const currentUser = await User.findById(req?.userAuth?._id).select("-password");
 	// get the token from cuurent user object
 	const verificationToken = await currentUser.generateAccountVerificationToken();
@@ -428,7 +435,7 @@ exports.accountVerification = asyncHandler(async (req, res, next) => {
 		accountVerificationToken: hashedToken,
 		accountVerificationExpires: {$gt: Date.now()}
 	});
-
+ console.log("Token user found:", tokenUser);
 	if (!tokenUser) {
 		const error = new Error("user verification email is invalid or expired");
 		next(error);

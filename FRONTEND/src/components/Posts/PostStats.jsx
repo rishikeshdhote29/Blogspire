@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import {MdWavingHand} from "react-icons/md";
@@ -19,25 +19,41 @@ const PostStats = ({
 	const timeSinceCreated = createdAt ? moment(createdAt).fromNow() : "just now";
 
 	const dispatch = useDispatch();
-	
+	const [localLikes, setLocalLikes] = useState(likes ?? 0);
+	const [localDislikes, setLocalDislikes] = useState(dislikes ?? 0);
+	const [localClaps, setLocalClaps] = useState(claps ?? 0);
+	const [localIsLiked, setLocalIsLiked] = useState(!!isLiked);
+	const [localIsDisliked, setLocalIsDisliked] = useState(!!isDisliked);
+
 	//! Like post handler
 
 	const likePostHandler = () => {
-		//console.log("like button clicked!")
+		if (localIsLiked) return;
+		setLocalLikes((prev) => prev + 1);
+		if (localIsDisliked) {
+			setLocalDislikes((prev) => Math.max(0, prev - 1));
+		}
+		setLocalIsLiked(true);
+		setLocalIsDisliked(false);
 		dispatch(likePostAction(postId));
-		// window.location.reload();
 	};
 
 	//! DisLike post handler
 
 	const dislikePostHandler = () => {
+		if (localIsDisliked) return;
+		setLocalDislikes((prev) => prev + 1);
+		if (localIsLiked) {
+			setLocalLikes((prev) => Math.max(0, prev - 1));
+		}
+		setLocalIsDisliked(true);
+		setLocalIsLiked(false);
 		dispatch(dislikePostAction(postId));
-		// window.location.reload();
 	};
 
 	const clapPostHandler = () => {
+		setLocalClaps((prev) => prev + 1);
 		dispatch(clapPostAction(postId));
-		// window.location.reload();
 	};
 
 	return (
@@ -67,7 +83,7 @@ const PostStats = ({
 			</div>
 			<button
 			 onClick={likePostHandler}
-			 className={`flex items-center gap-1 m-2 text-2xl ${isLiked ? "text-green-500" : "text-gray-400"}`}>
+			 className={`flex items-center gap-1 m-2 text-2xl ${localIsLiked ? "text-green-500" : "text-gray-400"}`}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -83,11 +99,11 @@ const PostStats = ({
 					/>
 				</svg>
 
-				{likes ?? 0}
+				{localLikes}
 			</button>
 			<button
 			  onClick={dislikePostHandler}
-			 className={`flex items-center gap-1 m-2 text-2xl ${isDisliked ? "text-red-500" : "text-gray-400"}`}>
+			 className={`flex items-center gap-1 m-2 text-2xl ${localIsDisliked ? "text-red-500" : "text-gray-400"}`}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -103,14 +119,14 @@ const PostStats = ({
 					/>
 				</svg>
 
-				{dislikes ?? 0}
+				{localDislikes}
 			</button>
               {/*claps*/}
 			<button
 			 onClick={clapPostHandler}
 			className="flex items-center gap-1 m-2 text-2xl text-gray-400">
 				 <MdWavingHand/>
-				 {claps ?? 0}
+				 {localClaps}
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"

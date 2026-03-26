@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {loginAction} from '../../redux/slices/users/usersSlices';
+import {forgetPasswordAction, loginAction} from '../../redux/slices/users/usersSlices';
 import LoadingComponent from "../Alert/LoadingComponent.jsx";
 import ErrorMsg from "../Alert/ErrorMsg.jsx";
 import SuccessMsg from "../Alert/SuccessMsg.jsx";
@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 const Login = () => {
  const dispatch = useDispatch();
  const {loading, error,success} = useSelector((state) => state.users || {});
+ 
  const [formData, setFormData] = useState({
   username: '',
    password: ''
@@ -25,6 +26,15 @@ const navigate= useNavigate();
    
    
  };
+
+ // forget password handle
+
+function handleForget(e) {
+   e.preventDefault();
+navigate("/forget-password")
+
+}
+
  return (
    <div className="min-h-screen flex items-center justify-center bg-gray-100">
      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -57,11 +67,12 @@ const navigate= useNavigate();
              required
            />
          </div>
+           <a className={"mb-5 text-blue-600"} onClick={handleForget}>Forget Password</a>
          {error ? <p className="mb-4 text-sm text-red-600">{error?.message || 'Login failed'}</p> : null}
            {loading?<LoadingComponent/>:<button
            type="submit"
            disabled={loading}
-           className="w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition duration-200"
+           className="w-full mt-5 bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition duration-200"
          >
            {loading ? 'Logging in...' : 'Login'}
          </button>}

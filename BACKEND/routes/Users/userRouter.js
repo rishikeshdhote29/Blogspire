@@ -41,7 +41,7 @@ usersRouter.put("/reset-password/:resetToken",resetPassword)
 //send account verification email send
 usersRouter.put("/account-verification-email",isLoggedIn,accountVerificationEmail);
 // account verification route
-usersRouter.put("/verify-account/:verificationToken",isLoggedIn,accountVerification);
+usersRouter.put("/verify-account/:verificationToken",accountVerification);
 
 
 module.exports=usersRouter;

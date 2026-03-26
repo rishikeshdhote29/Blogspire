@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler")
+const mongoose = require("mongoose")
 const Post = require("../../models/Posts/Post")
 const User = require("../../models/Users/User")
 const Category = require("../../models/Categories/Category")
@@ -137,13 +138,20 @@ exports.fetchUsersAllPosts=asyncHandler(async(req,res,next)=>{
 
 exports.fetchPublicUserPosts=asyncHandler(async(req,res,next)=>{
 	const userId=req.params.userId;
-	
+
+	if (!mongoose.Types.ObjectId.isValid(userId)) {
+		return res.status(400).json({
+			status: "failed",
+			message: "Invalid user id",
+		});
+	}
+
 
 	//fetch those posts who author is not availble in blockingUsersId
 	 const allPosts=	await Post.find({author:userId}).populate({
 		 path:"author",
 		 model:"User",
-		 select:"email username role "
+		 select:"email username role profile"
 	 }).populate({
 		 path:"category",
 		 model:"Category",

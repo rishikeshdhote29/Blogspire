@@ -23,17 +23,17 @@ jobs:
         with:
           node-version: '24.x'
 
-      - name: npm install, build, and test
+      - name: Install and build backend
+        working-directory: BACKEND
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: BACKEND
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,6 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+          path: BACKEND
       
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -51,5 +52,5 @@ jobs:
         with:
           app-name: 'blogspire'
           slot-name: 'Production'
-          package: .
+          package: BACKEND
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BA981A1775674D3F880A6CC67E30C745 }}

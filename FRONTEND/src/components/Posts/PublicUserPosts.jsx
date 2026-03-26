@@ -1,24 +1,23 @@
 import React, { useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import {
-    fetchMyPostsAction,
-    fetchPrivatePostsAction,
+  
     fetchPublicUserPostsAction
 } from "../../redux/slices/posts/postSlices";
 import LoadingComponent from "../Alert/LoadingComponent";
-import { Link } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 const PublicUserPosts = () => {
 
   const dispatch = useDispatch();
-
+  const { userId } = useParams();
   const { posts, error, success, loading } = useSelector(
     (state) => state?.posts
   );
-  
   useEffect(()=> {
-    dispatch(fetchPublicUserPostsAction())
-  },[dispatch]);
+    if (!userId) return;
+    dispatch(fetchPublicUserPostsAction(userId));
+  },[dispatch, userId]);
 
  function LimitedText(text) {
    const limit=150;
@@ -29,7 +28,6 @@ const PublicUserPosts = () => {
   return <p>{displayText}</p>;
 }
 
- 
   return (
     <>
       <div>

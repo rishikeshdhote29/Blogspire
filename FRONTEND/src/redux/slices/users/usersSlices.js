@@ -3,6 +3,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import { resetErrorAction, resetSuccessAction } from "../globalSlice/globalSlice.js";
 
+
 const INITIAL_STATE = {
     loading: false,
     error: null,
@@ -260,6 +261,72 @@ export const unblockUserAction= createAsyncThunk("users/unblock",
     })
 
 
+// profile verification email send
+export const sendVerificationEmailAction = createAsyncThunk(
+    "users/account-verification-email",
+async(_, {rejectWithValue, getState})=> {
+        try{
+            const token = getState().users?.userAuth?.userInfo?.token;
+            
+            const config={
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                    
+                }
+            }
+            
+          const {data} = await axios.put("http://localhost:3000/api/v1/users/account-verification-email",{},config);
+
+            return data;
+            
+        }
+        catch(error) {
+            return rejectWithValue(error?.response?.data);
+        }
+}
+)
+
+//handle forget password action
+export  const forgetPasswordAction = createAsyncThunk(
+    "users/forget-password",
+    async(email,{rejectWithValue})=> {
+        try{
+            
+            await axios.post("http://localhost:3000/api/v1/users/forgot-password",{email});
+        }catch(error) {
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+//handle reset password action
+export  const resetPasswordAction = createAsyncThunk(
+    "users/reset-password",
+    async({password, resetToken},{rejectWithValue})=> {
+        try{
+            await axios.put(
+                `http://localhost:3000/api/v1/users/reset-password/${resetToken}`,
+                {password}
+            );
+        }catch(error) {
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+
+//handle verify account action
+export  const verifyAccountAction = createAsyncThunk(
+    "users/verify-account",
+    async(verificationToken,{rejectWithValue})=> {
+        try{
+            await axios.put(
+                `http://localhost:3000/api/v1/users/verify-account/${verificationToken}`,
+                
+            );
+        }catch(error) {
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 //! Users slices
 
 const usersSlice = createSlice({
@@ -448,6 +515,77 @@ const usersSlice = createSlice({
             state.loading = false;
             state.error=action.payload;
              state.success = false;
+            
+        })
+        
+        // send verification email
+        
+        
+        builder.addCase(sendVerificationEmailAction.pending,(state)=> {
+            state.loading = true;
+            
+        });
+        builder.addCase(sendVerificationEmailAction.fulfilled,(state)=> {
+            state.loading = false;
+            state.success = true;
+            
+            
+        });
+        builder.addCase(sendVerificationEmailAction.rejected,(state,action)=> {
+            state.loading = false;
+             state.success = false;
+            
+        })
+        
+        // forget password
+        builder.addCase(forgetPasswordAction.pending,(state)=>{
+            state.loading = true;
+            state.error = null;
+            
+        });
+         builder.addCase(forgetPasswordAction.fulfilled,(state)=>{
+            state.loading = false;
+            state.error = null;
+            state.success = true;
+            
+        });
+         builder.addCase(forgetPasswordAction.rejected,(state,action)=>{
+            state.loading = false;
+            state.error =action.payload;
+            
+        })
+        //reset password
+        builder.addCase(resetPasswordAction.pending,(state)=>{
+            state.loading = true;
+            state.error = null;
+            
+        });
+         builder.addCase(resetPasswordAction.fulfilled,(state)=>{
+            state.loading = false;
+            state.error = null;
+            state.success = true;
+            
+        });
+         builder.addCase(resetPasswordAction.rejected,(state,action)=>{
+            state.loading = false;
+            state.error =action.payload;
+            
+        })
+        //verify account
+        builder.addCase(verifyAccountAction.pending,(state)=>{
+            state.loading = true;
+            state.error = null;
+            
+        });
+         builder.addCase(verifyAccountAction.fulfilled,(state)=>{
+            state.loading = false;
+            state.error = null;
+            state.success = true;
+            
+        });
+         builder.addCase(verifyAccountAction.rejected,(state,action)=>{
+            state.loading = false;
+            state.error =action.payload;
             
         })
     },

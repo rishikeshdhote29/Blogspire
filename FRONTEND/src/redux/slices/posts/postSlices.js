@@ -77,9 +77,16 @@ export const fetchPublicPostAction = createAsyncThunk(
  //!Fetch public user  post
  export const fetchPublicUserPostsAction = createAsyncThunk(
   "posts/fetch-public-user-posts",
-  async(userId,payload,{rejectWithValue,getState,dispatch})=> {
+      async (userId, { rejectWithValue, getState }) => {
     //make request
     try {
+        const normalizedUserId =
+          typeof userId === "object" && userId !== null ? userId.userId : userId;
+
+        if (!normalizedUserId || typeof normalizedUserId !== "string") {
+          return rejectWithValue({ message: "Invalid user id" });
+        }
+
       const token = getState().users?.userAuth?.userInfo?.token;
       const config = {
         headers: {
@@ -87,9 +94,10 @@ export const fetchPublicPostAction = createAsyncThunk(
         },
       };
       const {data} = await axios.get(
-        "http://localhost:3000/api/v1/posts/public-user-posts/"+userId,
+          `http://localhost:3000/api/v1/posts/public-user-posts/${normalizedUserId}`,
         config
       );
+    
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
