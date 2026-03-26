@@ -13,6 +13,7 @@ dotenv.config();
 
 // Create an express app
 const app = express();
+const serverStartedAt = Date.now();
 
 // Middleware
 app.use(express.json());
@@ -35,6 +36,16 @@ app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/posts", postRouter);
 
 app.use("/api/v1/comments", commentRouter);
+
+// Lightweight health endpoint for uptime checks and frontend status page.
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "blogspire-backend",
+    uptimeSeconds: Math.floor((Date.now() - serverStartedAt) / 1000),
+    timestamp: new Date().toISOString(),
+  });
+});
 // establsiing coonection to mngoose
 connectDB();
 // setup up the  middle ware
