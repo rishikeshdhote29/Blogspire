@@ -1,6 +1,7 @@
 import { createAsyncThunk,createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { getPostAction } from "../posts/postSlices";
+import { apiUrl } from "../../../utils/apiConfig";
 import {
     resetErrorAction,
     resetSuccessAction
@@ -27,14 +28,14 @@ export const createCommentAction = createAsyncThunk(
                     Authorization: `Bearer ${token}`,
                 },
             };
-            const {data} = await axios.post(`
-                http://localhost:3000/api/v1/comments/${payload?.postId}`,
+            const {data} = await axios.post(
+                apiUrl(`/comments/${payload?.postId}`),
                 {
                     message: payload?.message,
                 },
                 config
             );
-            dispatch(getPostAction(postId));
+            dispatch(getPostAction(payload?.postId));
             return data;
         } catch (error) {
             return rejectWithValue(error?.response?.data);

@@ -95,7 +95,7 @@ const PostDetails = () => {
               </div>
               <div className="flex items-center justify-center">
                 <p className="inline-block font-medium text-green-500">
-                  {postData?.author?.username || "Unknown author"}
+                  {postData?.author?.name || "Unknown author"}
                 </p>
                 <span className="mx-1 text-green-500">•</span>
                 <p className="inline-block font-medium text-green-500">
@@ -121,7 +121,7 @@ const PostDetails = () => {
                   </div>
                   <div className="w-auto px-2">
                     <h4 className="text-base font-bold md:text-lg text-coolGray-800">
-                      {postData?.author?.username || "Unknown author"}
+                      {postData?.author?.name || "Unknown author"}
                     </h4>
                     
                   </div>

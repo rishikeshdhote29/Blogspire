@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 
 import axios from "axios";
 import { resetErrorAction, resetSuccessAction } from "../globalSlice/globalSlice.js";
+import { apiUrl } from "../../../utils/apiConfig";
 
 
 const INITIAL_STATE = {
@@ -28,7 +29,7 @@ export const loginAction = createAsyncThunk(
         //make request
         try{
           const {data} = await axios.post(
-            "http://localhost:3000/api/v1/users/login",
+            apiUrl("/users/login"),
             payload
           );
           localStorage.setItem("userInfo",JSON.stringify(data));
@@ -54,7 +55,7 @@ export const userProfileAction = createAsyncThunk(
                 },
             };
             const {data} = await axios.get(
-                `http://localhost:3000/api/v1/users/profile`,
+                apiUrl("/users/profile"),
                 config
             );
             return data;
@@ -79,7 +80,7 @@ export const userPublicProfileAction = createAsyncThunk(
                 },
             };
             const {data} = await axios.get(
-                `http://localhost:3000/api/v1/users/public-profile/${userId}`,
+                apiUrl(`/users/public-profile/${userId}`),
                 config
             );
             
@@ -104,7 +105,7 @@ export const viewProfileAction= createAsyncThunk("users/view-profile",
                 },
             };
             const {data} = await axios.get(
-                `http://localhost:3000/api/v1/users/view-other-profile/${userId}`,
+                apiUrl(`/users/view-other-profile/${userId}`),
                 config
             );
             
@@ -142,7 +143,7 @@ export const updateProfileAction = createAsyncThunk(
             if (payload.coverImage)         formData.append("coverImage", payload.coverImage);
 
             const { data } = await axios.put(
-                "http://localhost:3000/api/v1/users/update-profile",
+                apiUrl("/users/update-profile"),
                 formData,
                 config
             );
@@ -168,7 +169,7 @@ export const registerAction = createAsyncThunk(
         //make request
         try {
             const {data} = await axios.post(
-                "http://localhost:3000/api/v1/users/register",
+                apiUrl("/users/register"),
                 payload
             );
             return data;
@@ -191,7 +192,7 @@ export const followUserAction= createAsyncThunk("users/follow",
         },
     };
 
-        const {data}=await axios.put(`http://localhost:3000/api/v1/users/following/${userId}`,{},config);
+        const {data}=await axios.put(apiUrl(`/users/following/${userId}`),{},config);
         return data;
     }catch(error){
          
@@ -212,7 +213,7 @@ export const unfollowUserAction= createAsyncThunk("users/unfollow",
         },
     };
 
-        const {data}=await axios.put(`http://localhost:3000/api/v1/users/unfollowing/${userId}`,{},config);
+        const {data}=await axios.put(apiUrl(`/users/unfollowing/${userId}`),{},config);
         return data;
     }catch(error){
          
@@ -233,7 +234,7 @@ export const blockUserAction= createAsyncThunk("users/block",
         },
     };
 
-        const {data}=await axios.put(`http://localhost:3000/api/v1/users/block/${userId}`,{},config);
+        const {data}=await axios.put(apiUrl(`/users/block/${userId}`),{},config);
         return data;
     }catch(error){
          
@@ -252,7 +253,7 @@ export const unblockUserAction= createAsyncThunk("users/unblock",
         },
     };
 
-        const {data}=await axios.put(`http://localhost:3000/api/v1/users/unblock/${userId}`,{},config);
+        const {data}=await axios.put(apiUrl(`/users/unblock/${userId}`),{},config);
         return data;
     }catch(error){
          
@@ -275,7 +276,7 @@ async(_, {rejectWithValue, getState})=> {
                 }
             }
             
-          const {data} = await axios.put("http://localhost:3000/api/v1/users/account-verification-email",{},config);
+          const {data} = await axios.put(apiUrl("/users/account-verification-email"),{},config);
 
             return data;
             
@@ -292,7 +293,7 @@ export  const forgetPasswordAction = createAsyncThunk(
     async(email,{rejectWithValue})=> {
         try{
             
-            await axios.post("http://localhost:3000/api/v1/users/forgot-password",{email});
+            await axios.post(apiUrl("/users/forgot-password"),{email});
         }catch(error) {
             return rejectWithValue(error?.response?.data);
         }
@@ -304,7 +305,7 @@ export  const resetPasswordAction = createAsyncThunk(
     async({password, resetToken},{rejectWithValue})=> {
         try{
             await axios.put(
-                `http://localhost:3000/api/v1/users/reset-password/${resetToken}`,
+                apiUrl(`/users/reset-password/${resetToken}`),
                 {password}
             );
         }catch(error) {
@@ -319,7 +320,7 @@ export  const verifyAccountAction = createAsyncThunk(
     async(verificationToken,{rejectWithValue})=> {
         try{
             await axios.put(
-                `http://localhost:3000/api/v1/users/verify-account/${verificationToken}`,
+                apiUrl(`/users/verify-account/${verificationToken}`),
                 
             );
         }catch(error) {
