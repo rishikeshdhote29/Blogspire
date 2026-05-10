@@ -19,8 +19,7 @@ export default function PrivateNavbar() {
   const { userAuth } = useSelector((state) => state.users);
   const user = userAuth?.userInfo;
   
-  console.log("user logdin");
-  console.log(user);
+ 
 
   const logoutHandler = () => {
     dispatch(logoutAction());

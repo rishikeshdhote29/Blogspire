@@ -4,18 +4,24 @@ import Select from "react-select";
 import LoadingComponent from "../Alert/LoadingComponent";
 import ErrorMsg from "../Alert/ErrorMsg";
 import SuccessMsg from "../Alert/SuccessMsg";
-import {fetchCategoriesAction} from "../../redux/slices/categories/categorySlices.js";
+import {fetchCategoriesAction, createCategoryAction} from "../../redux/slices/categories/categorySlices.js";
 import { addPostAction } from "../../redux/slices/posts/postSlices.js";
+import { resetErrorAction } from "../../redux/slices/globalSlice/globalSlice.js";
 const AddPost = () => {
   //fetch categories
   const dispatch = useDispatch();
  
   //! Error state
   const [errors,setErrors] = useState({});
+  
+  //! Category search state
+  const [categorySearch, setCategorySearch] = useState("");
+  const [showAddCategoryBtn, setShowAddCategoryBtn] = useState(false);
 
   //get data from store
-  const {categories} = useSelector((state)=> state?.categories);
+  const {categories, error: categoryError, loading: categoryLoading} = useSelector((state)=> state?.categories);
    console.log("fetched categories", categories);
+   
    useEffect(()=> {
     dispatch(fetchCategoriesAction());
    },[dispatch])
@@ -28,15 +34,11 @@ const AddPost = () => {
           label: category?.name,
         }
       })
-  
-
-
+   
+  console.log("options:", options);
   //!Get post from Store
-  const {post, error, loading, success} = useSelector((state)=> state?.posts);
+  const {error, loading, success} = useSelector((state)=> state?.posts);
 
-  useEffect(()=> {
-    dispatch(fetchCategoriesAction());
-  }, [dispatch]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -71,8 +73,59 @@ const AddPost = () => {
   };
 
   const handleSelectChange = (selectedOption) => {
+    console.log("handleSelectChange called with:", selectedOption);
     setFormData({...formData,category: selectedOption.value});
+    setCategorySearch("");
+    setShowAddCategoryBtn(false);
   };
+
+  const handleCategorySearchChange = (inputValue, actionMeta) => {
+    if (actionMeta?.action && actionMeta.action !== "input-change") {
+      return inputValue;
+    }
+
+    console.log("handleCategorySearchChange called with:", inputValue);
+    setCategorySearch(inputValue);
+    // Clear any previous errors when user starts searching again
+    if(categoryError) {
+      dispatch(resetErrorAction());
+    }
+    // Check if search term matches any existing category
+    const matchFound = categories?.allCategories?.some(
+      (cat) => cat?.name?.toLowerCase() === inputValue?.toLowerCase()
+    );
+    console.log("matchFound:", matchFound, "inputValue.trim():", inputValue.trim());
+    // Show button only if search term is not empty and no match found
+    const shouldShow = inputValue.trim() !== "" && !matchFound;
+    console.log("shouldShow button:", shouldShow);
+    setShowAddCategoryBtn(shouldShow);
+  };
+
+  const handleAddNewCategory = async () => {
+    console.log("handleAddNewCategory called");
+    console.log("categorySearch input:", categorySearch);
+    
+    if(categorySearch.trim()) {
+      console.log("Creating new category:", categorySearch);
+      const result = await dispatch(createCategoryAction(categorySearch.trim()));
+      console.log("Create result:", result);
+      console.log("Result payload:", result.payload);
+      
+      if(result.payload?.category) {
+        console.log("Category created, refetching...");
+        setFormData((prev) => ({
+          ...prev,
+          category: result.payload.category._id,
+        }));
+        await dispatch(fetchCategoriesAction());
+        setCategorySearch("");
+        setShowAddCategoryBtn(false);
+        dispatch(resetErrorAction());
+      }
+    } else {
+      console.log("Category search is empty");
+    }
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -87,15 +140,14 @@ const AddPost = () => {
       dispatch(addPostAction(formData));
       e.preventDefault();
       
-    setFormData({
-      title: "",
-      image: null,
-      category: null,
-      content: "",
-    });
-  };
-
+      setFormData({
+        title: "",
+        image: null,
+        category: null,
+        content: "",
+      });
     }
+  }
 
 
   return (
@@ -138,19 +190,51 @@ const AddPost = () => {
 
           </label>
           {/* category here */}
-          <label className="mb-4 flex flex-col w-full">
-                        <span className="mb-1 text-coolGray-800 font-medium">Category</span>
-                        <Select
-                            options={options}
-                            name="category"
-                            onChange={handleSelectChange}
-                            onBlur={handleBlur}
-                        />
+          <div className="mb-4 flex flex-col w-full">
+                        <label><span className="mb-1 text-coolGray-800 font-medium">Category</span></label>
+                        <div className="relative">
+                            <Select
+                                options={options}
+                                name="category"
+                                onChange={handleSelectChange}
+                                onInputChange={handleCategorySearchChange}
+                                inputValue={categorySearch}
+                                onBlur={handleBlur}
+                                noOptionsMessage={({ inputValue }) => {
+                                    const value = (inputValue || "").trim();
+                                    const matchFound = options?.some(
+                                      (opt) => opt?.label?.toLowerCase() === value?.toLowerCase()
+                                    );
+
+                                    if (!value || matchFound) {
+                                      return "No categories found";
+                                    }
+
+                                    return (
+                                      <div className="p-2">
+                                        <p className="mb-2 text-sm text-gray-500">
+                                          No category found for "{value}".
+                                        </p>
+                                        <button
+                                          type="button"
+                                          onMouseDown={(e) => e.preventDefault()}
+                                          onClick={handleAddNewCategory}
+                                          disabled={categoryLoading}
+                                          className="w-full rounded-md bg-blue-500 px-3 py-2 text-sm font-medium text-white hover:bg-blue-600"
+                                        >
+                                          {categoryLoading ? "Creating..." : `+ Add "${value}" as new category`}
+                                        </button>
+                                      </div>
+                                    );
+                                }}
+                            />
+                        </div>
+                        {showAddCategoryBtn && categoryError && <ErrorMsg message={categoryError?.message} />}
                         {/* error here */}
                         {errors?.category && (
-                            <p className="text-red-500 ">{errors.category}</p>
+                            <p className="text-red-500 mt-1">{errors.category}</p>
                         )}
-                    </label>
+                    </div>
 
           
           <label className="mb-4 flex flex-col w-full">

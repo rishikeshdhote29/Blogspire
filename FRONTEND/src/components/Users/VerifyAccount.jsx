@@ -22,7 +22,7 @@ const navigate= useNavigate();
 	 
    e.preventDefault();
 
-   dispatch(verifyAccountAction(verificationToken));
+   dispatch(verifyAccountAction({verificationToken}));
   
    
    

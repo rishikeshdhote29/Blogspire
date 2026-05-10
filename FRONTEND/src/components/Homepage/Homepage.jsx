@@ -62,20 +62,20 @@ const Homepage = () => {
                 </Link>
               </div>
 
-              <div className="mt-8 grid max-w-md grid-cols-3 gap-3 text-center">
-                <div className="rounded-lg border border-slate-200 bg-white p-3">
-                  <p className="text-xl font-bold text-slate-900">10K+</p>
-                  <p className="text-xs text-slate-500">Readers</p>
-                </div>
-                <div className="rounded-lg border border-slate-200 bg-white p-3">
-                  <p className="text-xl font-bold text-slate-900">2K+</p>
-                  <p className="text-xs text-slate-500">Articles</p>
-                </div>
-                <div className="rounded-lg border border-slate-200 bg-white p-3">
-                  <p className="text-xl font-bold text-slate-900">500+</p>
-                  <p className="text-xs text-slate-500">Authors</p>
-                </div>
-              </div>
+              {/*<div className="mt-8 grid max-w-md grid-cols-3 gap-3 text-center">*/}
+              {/*  <div className="rounded-lg border border-slate-200 bg-white p-3">*/}
+              {/*    <p className="text-xl font-bold text-slate-900">10K+</p>*/}
+              {/*    <p className="text-xs text-slate-500">Readers</p>*/}
+              {/*  </div>*/}
+              {/*  <div className="rounded-lg border border-slate-200 bg-white p-3">*/}
+              {/*    <p className="text-xl font-bold text-slate-900">2K+</p>*/}
+              {/*    <p className="text-xs text-slate-500">Articles</p>*/}
+              {/*  </div>*/}
+              {/*  <div className="rounded-lg border border-slate-200 bg-white p-3">*/}
+              {/*    <p className="text-xl font-bold text-slate-900">500+</p>*/}
+              {/*    <p className="text-xs text-slate-500">Authors</p>*/}
+              {/*  </div>*/}
+              {/*</div>*/}
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

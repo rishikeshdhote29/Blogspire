@@ -317,7 +317,7 @@ export  const resetPasswordAction = createAsyncThunk(
 //handle verify account action
 export  const verifyAccountAction = createAsyncThunk(
     "users/verify-account",
-    async(verificationToken,{rejectWithValue})=> {
+    async({verificationToken},{rejectWithValue})=> {
         try{
             await axios.put(
                 apiUrl(`/users/verify-account/${verificationToken}`),
@@ -340,8 +340,7 @@ const usersSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(loginAction.fulfilled,(state,action)=> {
-            console.log("success",action.payload);
-            console.log("loginAction",loginAction.fulfilled);
+         
             state.success= true;
             state.userAuth.userInfo = action.payload;
             state.loading = false;
