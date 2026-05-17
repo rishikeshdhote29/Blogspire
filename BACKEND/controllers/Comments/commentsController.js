@@ -36,7 +36,7 @@ await  Post.findByIdAndUpdate(postId,{$push:{comments:comment._id}})
 	 //!Get the comment id to be deleted
 	 const commentId = req.params.commentId;
 	 const comment= await Comment.findByIdAndDelete(commentId);
-
+	 
 	 res.status(200).json({
 		 status:"success",
 		 message:"comment successfully deleted",

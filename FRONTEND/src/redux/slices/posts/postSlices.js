@@ -520,7 +520,6 @@ builder.addCase(fetchMyPostsAction.pending, (state, action) => {
           state.loading = true;
         });
         builder.addCase(postViewCountAction.fulfilled,(state,action)=> {
-          state.post = action.payload;
           state.loading = false;
           state.error = null;
         });
