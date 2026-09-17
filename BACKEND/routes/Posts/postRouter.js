@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {createPost,fetchAllPosts} = require('../../controllers/posts/postController');
+const {createPost,fetchAllPosts} = require('../../controllers/Posts/postController');
  const isLoggedIn= require('../../middlewares/isLoggedIn');
 const {fetchSinglePost,deletePost,updatePost, likePost, dislikePost, clapPost, schedulePost,
  getPublicPosts, postViewCount, fetchUsersAllPosts, fetchPublicUserPosts, searchPosts
