@@ -312,7 +312,17 @@ export const addPostAction = createAsyncThunk(
         }
 
     );
-  
+  // search post action
+    export const SearchPostsAction= createAsyncThunk("posts/search-posts",async(keyword,{rejectWithValue,dispatch,getState})=>{
+        try{
+            const res= await  axios.get(apiUrl(`posts/search?keyword=${keyword}`))
+           
+    return res.data;
+        }catch (error){
+            return rejectWithValue(error?.response?.data);
+        }
+        
+    })
 
 //!Posts slices
 
@@ -528,10 +538,22 @@ builder.addCase(fetchMyPostsAction.pending, (state, action) => {
           state.loading = false;
         });
 
+// search post action
+      builder.addCase(SearchPostsAction.pending,(state,action)=> {
+           state.loading = true;
+      })
+ builder.addCase(SearchPostsAction.fulfilled,(state,action)=> {
+           state.loading = false;
+           state.posts = action.payload.posts;
+          
+               state.error = null;
+      })
 
-
-
-
+builder.addCase(SearchPostsAction.rejected,(state,action)=> {
+           state.loading = false;
+           
+               state.error = action.payload;
+      })
 
     //! Reset error action
     builder.addCase(resetErrorAction, (state) => {

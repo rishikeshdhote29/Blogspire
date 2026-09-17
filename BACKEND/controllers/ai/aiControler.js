@@ -1,12 +1,15 @@
-const generateTitle= require("../../utils/openai");
+const { generateTitle } = require("../../utils/openai");
 const asyncHandler = require("express-async-handler");
-export const  suggestBlogTitles = asyncHandler( async (req, res) => {
+const {suggestBlogTitles} = require("../../utils/Gemini");
+exports.suggestBlogTitles = asyncHandler( async (req, res) => {
+	
 	 const content = req.body.content;
+	console.log("content", content);
 	 if (!content) {
 		 throw new Error("Content is required");
 	 }
 	 
-	const titles = await generateTitle(content);
+	const titles = await suggestBlogTitles(content);
 	 res.status(200).json({
 		 success: true,
 		 

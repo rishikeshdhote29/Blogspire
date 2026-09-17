@@ -464,3 +464,27 @@ exports.postViewCount = asyncHandler(async (req, res, next) => {
 	post: updatedPost
   });
 });
+//@search post
+//@ route get /api/v1/posts/search/keyword?
+//@access public
+exports.searchPosts = asyncHandler(async (req, res) => {
+  const keyword = req.query.keyword || "";
+console.log(keyword)
+  const posts = await Post.find(
+    
+      { title: { $regex: keyword, $options: "i" }
+
+  })
+    .populate("category")
+    .populate({
+      path: "author",
+      model: "User",
+      select: "username email role profilePicture",
+    });
+console.log(posts)
+  res.status(200).json({
+    status: "success",
+    message: "Posts successfully fetched",
+    posts,
+  });
+});

@@ -8,6 +8,7 @@ const categoriesRouter = require("./routes/Categories/categoriesRouter");
 const postRouter = require("./routes/Posts/postRouter");
 const commentRouter = require("./routes/Comments/commentRouter");
 const sendEmail = require("./utils/sendEmail");
+const aiRouter = require("./routes/ai/aiRouter");
 // Load environment variables
 dotenv.config();
 
@@ -36,7 +37,9 @@ app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/posts", postRouter);
 
 app.use("/api/v1/comments", commentRouter);
+// ai routes
 
+app.use("/api/v1/ai",aiRouter);
 // Lightweight health endpoint for uptime checks and frontend status page.
 app.get("/api/v1/health", (req, res) => {
   res.status(200).json({

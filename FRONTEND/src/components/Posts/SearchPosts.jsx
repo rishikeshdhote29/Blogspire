@@ -39,24 +39,22 @@ const SearchPosts = () => {
           />
           <div className="container relative z-10 px-4 mx-auto">
             <div className="md:max-w-5xl mx-auto mb-8 md:mb-16 text-center">
-              <span className="inline-block py-px px-2 mb-4 text-xs leading-5 text-green-500 bg-green-100 font-medium uppercase rounded-full shadow-sm">
-                Blog
-              </span>
-              <h3 className="mb-4 text-3xl md:text-5xl leading-tight text-darkCoolGray-900 font-bold tracking-tighter">
-                My Posts
+              
+              <h3 className="mb-4 text-1xl md:text-1xl leading-tight text-darkCoolGray-900 font-bold tracking-tighter">
+               Search Results
               </h3>
             </div>
 
-            <div className="flex flex-wrap -mx-4 mb-12 md:mb-20">
+            <div className="flex text-center flex-wrap mb-12 md:mb-20">
               {/* loop */}
               {loading ? (
                 <LoadingComponent/>
               ) : error ? (
                 <h3 className="text-red-500 text-center">{error?.message}</h3>
-              ): posts?.allPosts?.length <= 0 ? (
-                 <h3>No posts found</h3>
+              ): posts?.length <= 0 ? (
+                 <h3 className="text-center">No posts found</h3>
               ) : (
-                posts?.allPosts?.map((post) => {
+                posts?.map((post) => {
                   return (
                     <div key={post.id} className="w-full md:w-1/2 px-4 mb-8">
                     <a className="block mb-6 overflow-hidden rounded-md" href="#">

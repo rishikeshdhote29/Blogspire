@@ -1,8 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PublicPosts from "../Posts/PublicPosts";
+import {useSelector} from "react-redux";
 
 const Homepage = () => {
+  
+    const token = useSelector((state) => state.users?.userAuth?.userInfo?.token);
+  
   const features = [
     {
       title: "Write Faster",
@@ -41,7 +45,10 @@ const Homepage = () => {
               <p className="mt-6 max-w-xl text-lg text-slate-600 md:text-xl">
                 Publish posts, engage with readers, and showcase your profile in one modern blogging experience.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              
+              
+              {!token && (
+                     <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   to="/register"
                   className="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
@@ -60,7 +67,7 @@ const Homepage = () => {
                 >
                   Explore Posts
                 </Link>
-              </div>
+              </div>)}
 
               {/*<div className="mt-8 grid max-w-md grid-cols-3 gap-3 text-center">*/}
               {/*  <div className="rounded-lg border border-slate-200 bg-white p-3">*/}

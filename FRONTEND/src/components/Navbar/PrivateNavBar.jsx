@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import {Fragment, useState} from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { logoutAction } from "../../redux/slices/users/usersSlices";
+import {SearchPostsAction} from "../../redux/slices/posts/postSlices.js";
 
 
 function classNames(...classes) {
@@ -13,13 +14,12 @@ function classNames(...classes) {
 }
 
 export default function PrivateNavbar() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+ 
 
   const { userAuth } = useSelector((state) => state.users);
   const user = userAuth?.userInfo;
-  
- 
+   const dispatch = useDispatch();
+ const navigate = useNavigate();
 
   const logoutHandler = () => {
     dispatch(logoutAction());
@@ -32,11 +32,30 @@ export default function PrivateNavbar() {
       ? "inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900"
       : "inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700";
 
+    const[keyword,setKeyword ] = useState()
+const {posts,loading,error} = useSelector((state)=>state?.posts);
+  
+  const handleChange=(e)=>{
+    setKeyword(e.target.value);
+  }
+
+  const handleSearch = (e) => {
+  e.preventDefault();
+
+  dispatch(SearchPostsAction(keyword));
+ if(!loading){
+  
+   navigate("/search");
+ }
+ 
+ 
+}
+
   return (
     <Disclosure as="nav" className="bg-white shadow">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto  max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
                 <div className="-ml-2 mr-2 flex items-center md:hidden">
@@ -73,7 +92,18 @@ export default function PrivateNavbar() {
                   </NavLink>
                 </div>
               </div>
-
+  < div className="flex inline-flex w-full max-w-md mx-auto px-4  mt-2 items-center ">
+               <div className="flex-shrink-0  align-bottom  rounded-md border shadow-2xl gap-x-1.5  ">
+                 <form onSubmit={handleSearch}>
+               <div className="flex">
+                   <input  onChange={handleChange}  className="block ps-1 w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" type="text" placeholder="Search..." />
+                   <button className={"border p-1 bg-indigo-600"} type="submit">Search</button>
+               </div>
+                 </form>
+              </div>
+             </div>
+  
+              
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <NavLink
@@ -197,6 +227,8 @@ export default function PrivateNavbar() {
                 Posts
               </NavLink>
             </div>
+            
+            
             <div className="border-t border-gray-200 pt-4 pb-3">
               <div className="flex items-center px-4 sm:px-6">
                 <div className="flex-shrink-0">

@@ -24,6 +24,7 @@ import PublicUserPosts from "./components/Posts/PublicUserPosts.jsx";
 import ForgetPassword from "./components/Users/ForgetPassword.jsx";
 import ResetPassword from "./components/Users/ResetPassword.jsx";
 import VerifyAccount from "./components/Users/VerifyAccount.jsx";
+import SearchPosts from "./components/Posts/SearchPosts.jsx";
 
 export default function App() {
   const { userAuth } = useSelector((state) => state.users);
@@ -43,7 +44,7 @@ export default function App() {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
         <Route path="/verify-account/:verificationToken" element={<VerifyAccount />} />
-        
+         <Route path="search" element={<SearchPosts />} />
 
         {/* Group protected routes under ProtectedRoute wrapper */}
         <Route element={<ProtectedRoute />}>
