@@ -1,4 +1,3 @@
-const { generateTitle } = require("../../utils/openai");
 const asyncHandler = require("express-async-handler");
 const {suggestBlogTitles} = require("../../utils/Gemini");
 exports.suggestBlogTitles = asyncHandler( async (req, res) => {
