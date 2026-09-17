@@ -4,8 +4,8 @@ const status=error?.status ?error.status:"failed"
 res.status(500).json({status:status,message:error?.message, stack:stack});
 }
 
-const notFoundHnadler=(req,res,next)=>{
+const notFoundHandler=(req,res,next)=>{
 	let error= new Error (`Cannot find the route for ${req.originalUrl} at the server`);
 	next(error)
 }
-module.exports = {globalErrorHandler,notFoundHnadler}
+module.exports = {globalErrorHandler,notFoundHandler}

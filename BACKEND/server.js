@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const {globalErrorHandler,notFoundHnadler} = require("./middlewares/globalerrorHandler");
+const {globalErrorHandler,notFoundHandler} = require("./middlewares/globalErrorHandler");
 const userRouter = require("./routes/Users/userRouter");
 const connectDB=require('./config/databse')
 const categoriesRouter = require("./routes/Categories/categoriesRouter");
@@ -58,7 +58,7 @@ app.use(express.json());
 
 
 //Not found error handler
-app.use(notFoundHnadler);
+app.use(notFoundHandler);
 //setuping global error handler
 app.use(globalErrorHandler);
 // Start server
