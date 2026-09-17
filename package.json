@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@google/genai": "^2.23.0",
-    "openai": "^7.17.0"
-  }
-}
