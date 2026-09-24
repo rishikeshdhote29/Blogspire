@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { PencilSparkles } from 'lucide-react';
+
 import {useDispatch,useSelector} from "react-redux";
 import Select from "react-select";
 import LoadingComponent from "../Alert/LoadingComponent";
@@ -7,6 +9,7 @@ import SuccessMsg from "../Alert/SuccessMsg";
 import {fetchCategoriesAction, createCategoryAction} from "../../redux/slices/categories/categorySlices.js";
 import { addPostAction } from "../../redux/slices/posts/postSlices.js";
 import { resetErrorAction } from "../../redux/slices/globalSlice/globalSlice.js";
+import {generateTitleAction} from "../../redux/slices/ai/aiSlices.js";
 const AddPost = () => {
   //fetch categories
   const dispatch = useDispatch();
@@ -20,13 +23,17 @@ const AddPost = () => {
 
   //get data from store
   const {categories, error: categoryError, loading: categoryLoading} = useSelector((state)=> state?.categories);
-   console.log("fetched categories", categories);
+  const { titles, success: titleSuccess } = useSelector((state) => state?.ai);
+      console.log("fetched categories", categories);
    
    useEffect(()=> {
     dispatch(fetchCategoriesAction());
    },[dispatch])
-  
-
+  const titleOptions = (typeof titles === "string" ? titles : "")
+    .split("\n")
+    .map((title) => title.replace(/^\s*\d+[.)]\s*/, "").trim())
+    .filter(Boolean)
+    .map((title) => ({ value: title, label: title }));
   //?Dummy values
   const options =  categories?.allCategories?.map((category)=> {
         return {
@@ -149,11 +156,21 @@ const AddPost = () => {
     }
   }
 
+  const handleGenerateTitles = () => {
+    dispatch(generateTitleAction({ content: formData.content }));
+  };
+
+  const handleTitleSelect = (selectedOption) => {
+    setFormData((previousFormData) => ({
+      ...previousFormData,
+      title: selectedOption?.value || "",
+    }));
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-full lg:w-1/2">
-        <div className="flex flex-col items-center p-10 xl:px-24 xl:pb-12 bg-white lg:max-w-xl lg:ml-auto rounded-4xl shadow-2xl">
+    <div className="min-h-screen w-full flex items-center justify-center px-4 py-8">
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl flex justify-center">
+        <div className="w-full max-w-xl flex flex-col items-center p-8 xl:px-24 xl:pb-12 bg-white rounded-4xl shadow-2xl">
           <h2 className="mb-4 text-2xl md:text-3xl text-coolGray-900 font-bold text-center">
             Add New Post
           </h2>
@@ -162,7 +179,8 @@ const AddPost = () => {
           <h3 className="mb-7 text-base md:text-lg text-coolGray-500 font-medium text-center">
             Share your thoughts and ideas with the community
           </h3>
-          <label className="mb-4 flex flex-col w-full">
+             <label className="mb-4 flex flex-col w-full">
+         
             <span className="mb-1 text-coolGray-800 font-medium">Title</span>
             <input
               className="py-3 px-3 leading-5 w-full text-coolGray-400 font-normal border border-coolGray-200 outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-lg shadow-sm"
@@ -173,13 +191,48 @@ const AddPost = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {/* error here */}
+   </label>
+           {/*ai title search button*/}
+             <label className="mb-4 flex flex-col w-full">
+            {titleSuccess? (
+                
+
+                
+                
+         
+                  <Select
+                    options={titleOptions}
+                    name="titles"
+                    onChange={handleTitleSelect}
+                    placeholder="Choose a generated title"
+                  />
+               
+                
+                ):
+                
+                <button
+                    type="button"
+                    onClick={handleGenerateTitles}
+                    className={"bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"}
+                >
+                
+   <div className={'flex items-center justify-center'}> AI suggestions for title
+    <span className={"mx-2"}><PencilSparkles /></span>
+   </div>
+    
+                
+
+                </button>
+            }
+                 {/* error here */}
+             </label>
             {errors?.title && <p className="text-red-500">{errors.title}</p>}
-          </label>
-          <label className="mb-4 flex flex-col w-full">
-            <span className="mb-1 text-coolGray-800 font-medium">Image</span>
-            <input
-              className="py-3 px-3 leading-5 w-full text-coolGray-400 font-normal border border-coolGray-200 outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-lg shadow-sm"
+            
+            
+            <label className="mb-4 flex flex-col w-full">
+                <span className="mb-1 text-coolGray-800 font-medium">Image</span>
+                <input
+                    className="py-3 px-3 leading-5 w-full text-coolGray-400 font-normal border border-coolGray-200 outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-lg shadow-sm"
               type="file"
               name="image"
               onChange={handleFileChange}
@@ -191,7 +244,8 @@ const AddPost = () => {
           </label>
           {/* category here */}
           <div className="mb-4 flex flex-col w-full">
-                        <label><span className="mb-1 text-coolGray-800 font-medium">Category</span></label>
+                        <label>
+                          <span className="mb-1 text-coolGray-800 font-medium">Category</span></label>
                         <div className="relative">
                             <Select
                                 options={options}

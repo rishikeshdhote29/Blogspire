@@ -21,10 +21,10 @@ const INITIAL_STATE = {
 
 export const fetchCategoriesAction = createAsyncThunk(
     "categories/lists",
-    async(_, {rejectWithValue})=> {
+    async(query, {rejectWithValue})=> {
         try {
             const {data} = await axios.get(
-                apiUrl("/categories")
+                apiUrl(`/categories`)
             );
             return data;
         } catch (error) {
