@@ -92,12 +92,17 @@ const {posts,loading,error} = useSelector((state)=>state?.posts);
                   </NavLink>
                 </div>
               </div>
-  < div className="flex inline-flex w-full max-w-md mx-auto px-4  mt-2 items-center ">
-               <div className="flex-shrink-0  align-bottom  rounded-md border shadow-2xl gap-x-1.5  ">
+  <div className="hidden md:flex mt-2 items-center">
+               <div className="flex-shrink-0 rounded-md border shadow-2xl">
                  <form onSubmit={handleSearch}>
                <div className="flex">
-                   <input  onChange={handleChange}  className="block ps-1 w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" type="text" placeholder="Search..." />
-                   <button className={"border p-1 bg-indigo-600"} type="submit">Search</button>
+                    <input
+                    onChange={handleChange}
+                    className="block w-full rounded-l-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                    type="text"
+                    placeholder="Search..."
+                  />
+                   <button className="rounded-r-md border border-indigo-600 px-3 py-2 bg-indigo-600 text-white text-sm font-medium" type="submit">Search</button>
                </div>
                  </form>
               </div>
@@ -216,6 +221,24 @@ const {posts,loading,error} = useSelector((state)=>state?.posts);
               >
                 Home
               </NavLink>
+              <div className="px-4 pb-3 sm:px-6">
+                <form onSubmit={handleSearch}>
+                  <div className="flex w-full">
+                    <input
+                      onChange={handleChange}
+                      className="block w-full rounded-l-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                      type="text"
+                      placeholder="Search..."
+                    />
+                    <button
+                      className="rounded-r-md border border-indigo-600 px-3 py-2 bg-indigo-600 text-white text-sm font-medium"
+                      type="submit"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </form>
+              </div>
               <NavLink
                 to="/posts"
                 className={({ isActive }) =>
