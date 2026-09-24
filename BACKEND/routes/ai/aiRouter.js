@@ -4,6 +4,6 @@ const isLoggedIn = require("../../middlewares/isLoggedIn");
 
 const aiRouter=express.Router();
 
-aiRouter.post('/suggest-blog-titles', suggestBlogTitles);
+aiRouter.post('/generate-titles', suggestBlogTitles);
 
 module.exports = aiRouter;

@@ -1,5 +1,12 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const fs = require("fs");
+const path = require("path");
+
+// Load environment variables
+const envFile = fs.existsSync(path.join(__dirname, ".env")) ? ".env" : "env";
+dotenv.config({ path: path.join(__dirname, envFile) });
+
 const cors = require("cors");
 const {globalErrorHandler,notFoundHandler} = require("./middlewares/globalErrorHandler");
 const userRouter = require("./routes/Users/userRouter");
@@ -9,8 +16,6 @@ const postRouter = require("./routes/Posts/postRouter");
 const commentRouter = require("./routes/Comments/commentRouter");
 const sendEmail = require("./utils/sendEmail");
 const aiRouter = require("./routes/ai/aiRouter");
-// Load environment variables
-dotenv.config();
 
 // Create an express app
 const app = express();
