@@ -13,12 +13,14 @@ import ErrorMsg from "../Alert/ErrorMsg";
 import LoadingComponent from "../Alert/LoadingComponent";
 import calculateReadingTime from "../../utils/calculateReadingTime.js";
 import AddComments from "../Comments/AddComments";
+import {generateSummary,clearSummary} from "../../redux/slices/ai/aiSlices.js";
 
 const PostDetails = () => {
   //! navigation
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  
+let summary=useSelector(state=>state?.ai?.summary);
   const { post, error } = useSelector((state) => state?.posts || {});
   const postData = post?.post;
 
@@ -72,6 +74,12 @@ const PostDetails = () => {
       setIsDeleting(false);
     }
   };
+
+function handleCreateSummary() {
+  
+    dispatch(generateSummary(postId));
+  
+}
 
   return (
     <>
@@ -159,6 +167,7 @@ const PostDetails = () => {
               isLiked={isLiked} // New prop
               isDisliked={isDisliked}
             />
+            
           </div>
           <div className="container px-4 mx-auto">
             <div className="mx-auto md:max-w-3xl">
@@ -230,7 +239,36 @@ const PostDetails = () => {
         onConfirm={handleDeleteConfirm}
         isDeleting={isDeleting}
       />
+<div>
 
+    {!summary ? (
+      <button
+        className="fixed bottom-5 right-5 m-5 rounded-full bg-blue-600 px-4 py-3 text-xl text-white shadow-lg"
+        onClick={handleCreateSummary}
+      >
+        Create Summary
+      </button>
+    ) : (
+      <div className="fixed bottom-5 right-5 w-80 rounded-xl border bg-white p-5 shadow-2xl">
+        
+        <button
+          className="absolute right-3 top-2"
+          onClick={()=>{
+            dispatch(clearSummary())
+          }}
+        >
+          ✕
+        </button>
+
+        <p className="mt-4 text-gray-700">
+          {summary}
+        </p>
+
+      </div>
+    )}
+  
+
+</div>
     </>
   );
 };
