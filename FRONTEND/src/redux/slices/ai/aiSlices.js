@@ -21,10 +21,23 @@ export const generateTitleAction = createAsyncThunk(
     }
     },
 );
+export const generateSummary = createAsyncThunk('ai/generate-summary', async (id, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.get(apiUrl(`/ai/generate-summary/${id}`), );
+        return data;
+    } catch (error) {
+        return rejectWithValue(error?.response?.data);
+    }
+});
 
 const aiSlice = createSlice({
     name: "ai",
     initialState: INITIAL_STATE,
+    reducers:{
+        clearSummary:(state)=>{
+            state.summary=null;
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(generateTitleAction.pending, (state) => {
             state.loading = true;
@@ -42,8 +55,25 @@ const aiSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         });
+        builder.addCase(generateSummary.pending,(state)=>{
+              state.loading = true;
+            state.error = null;
+            state.success = false;
+        });
+        builder.addCase(generateSummary.fulfilled,(state,action)=>{
+              state.loading = false;
+            state.error = null;
+            state.success = true;
+            state.summary=action.payload.summary;
+        });
+        builder.addCase(generateSummary.rejected,(state,action)=>{
+              state.loading = false;
+            state.error = action.payload;
+            state.success = false;
+        });
     },
 });
 
+export const { clearSummary } = aiSlice.actions;
 const aiReducers = aiSlice.reducer;
 export default aiReducers;

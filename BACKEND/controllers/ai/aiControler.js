@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const {suggestBlogTitles} = require("../../utils/Gemini");
+const {suggestBlogTitles,ContentSummary} = require("../../utils/Gemini");
 exports.suggestBlogTitles = asyncHandler( async (req, res) => {
 	
 	 const content = req.body.content;
@@ -19,5 +19,24 @@ exports.suggestBlogTitles = asyncHandler( async (req, res) => {
 		 titles: titles });
 	 
 	 
+	
+})
+
+exports.postSummary= asyncHandler(async(req,res)=>{
+ const postId = req.params.id;
+ 
+ if(!postId){
+	 throw new Error (" poist  is required");
+	 
+}
+ const summary= await ContentSummary(postId);
+ res.status(200).json({
+	success: true,
+	 message :" summary is  generated",
+	 
+	summary
+ })
+ 
+	
 	
 })
