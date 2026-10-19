@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Load environment variables
-const envFile = fs.existsSync(path.join(__dirname, ".env")) ? ".env" : "env";
+const envFile = fs.existsSync(path.join(__dirname, "..env")) ? "..env" : "env";
 dotenv.config({ path: path.join(__dirname, envFile) });
 
 const cors = require("cors");

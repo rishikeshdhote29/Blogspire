@@ -52,7 +52,7 @@ npm install
 
 ### Configure Environment Variables
 
-Create `BACKEND/.env`:
+Create `.env`:
 
 ```env
 MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/<db-name>
@@ -136,7 +136,7 @@ Also confirm that API requests use the shared URL helper in `FRONTEND/src/utils/
 
 ### Email or AI features do not work
 
-Confirm that the Gmail app password and `GEMINI_API_KEY` are present in `BACKEND/.env`, then restart the backend server after changing environment variables.
+Confirm that the Gmail app password and `GEMINI_API_KEY` are present in `.env`, then restart the backend server after changing environment variables.
 
 ## Deployment Notes
 
