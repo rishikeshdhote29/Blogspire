@@ -1,5 +1,5 @@
 const rawBaseUrl =
-  import.meta.env.VITE_API_BASE_URL?.trim() || "http://localhost:3000/api/v1";
+  import.meta.env.VITE_API_BASE_URL?.trim() ;
 
 const withProtocol =
   rawBaseUrl.startsWith("http://") || rawBaseUrl.startsWith("https://")
