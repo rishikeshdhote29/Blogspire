@@ -3,9 +3,15 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 const path = require("path");
 
-// Load environment variables
-const envFile = fs.existsSync(path.join(__dirname, "..env")) ? "..env" : "env";
-dotenv.config({ path: path.join(__dirname, envFile) });
+// Load the repository environment file when running from either the root or
+// BACKEND directory. A BACKEND/.env file, when present, takes precedence.
+const envPaths = [
+  path.join(__dirname, ".env"),
+  path.join(__dirname, "..", ".env"),
+  path.join(process.cwd(), ".env"),
+];
+const envPath = envPaths.find((candidate) => fs.existsSync(candidate));
+dotenv.config(envPath ? { path: envPath } : undefined);
 
 const cors = require("cors");
 const {globalErrorHandler,notFoundHandler} = require("./middlewares/globalErrorHandler");
